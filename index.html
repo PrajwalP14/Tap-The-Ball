@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Target Shooter</title>
+  <link rel="stylesheet" href="Tap the ball.css">
+  <style>
+    .target {
+      width: 60px;
+      height: 60px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: absolute;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="scoreBoard">Score: 0</div>
+  <div id="levelBoard">Level: 1</div>
+
+  <div id="gameArea">
+    <div id="playArea"></div>
+
+    <div id="buttonRow">
+      <button id="restartButton">Restart</button>
+    </div>
+  </div>
+
+  <div id="popupOverlay">
+    <div id="popupBox">
+      <p>Your score dropped to 0.</p>
+      <p id="finalScore">Score: 0</p>
+      <p id="highScoreDisplay">High Score: 0</p>
+      <p>Do you want to restart?</p>
+      <button class="popupButton" onclick="restartGame()">Restart</button>
+      <button class="popupButton" onclick="hidePopup()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const playArea = document.getElementById("playArea");
+    const scoreBoard = document.getElementById("scoreBoard");
+    const levelBoard = document.getElementById("levelBoard");
+    const body = document.body;
+    const finalScoreEl = document.getElementById("finalScore");
+    const highScoreDisplay = document.getElementById("highScoreDisplay");
+
+    let score = 0;
+    let level = 1;
+    let targetSpeed = 1800;
+    let spawnTimeout = null;
+    let highScore = 0;
+
+    const targetDesign = 'target1.png'; // Make sure this image exists in your directory
+
+    const backgrounds = [
+      'linear-gradient(to right, #2c3e50, #4ca1af)',
+      'linear-gradient(to right, #1e3c72, #2a5298)',
+      'linear-gradient(to right, #e96443, #904e95)',
+      'linear-gradient(to right, #0f2027, #203a43, #2c5364)',
+      'linear-gradient(to right, #f7971e, #ffd200)',
+      'linear-gradient(to right, #00bf8f, #001510)'
+    ];
+
+    function getSpeedForLevel(lvl) {
+      if (lvl === 1) return 1800;
+      return lvl < 6 ? 1400 - (lvl - 1) * 150 : 700;
+    }
+
+    function changeBackground() {
+      const index = Math.floor(level / 5) % backgrounds.length;
+      body.style.background = backgrounds[index];
+    }
+
+    function createTarget() {
+      const target = document.createElement("div");
+      target.classList.add("target");
+      target.style.backgroundImage = `url('tap the ball.png')`;
+
+      const areaWidth = playArea.clientWidth - 60;
+      const areaHeight = playArea.clientHeight - 60;
+
+      const x = Math.random() * areaWidth;
+      const y = Math.random() * areaHeight;
+
+      target.style.left = `${x}px`;
+      target.style.top = `${y}px`;
+
+      const removeTimeout = setTimeout(() => {
+        if (playArea.contains(target)) playArea.removeChild(target);
+        if (score > 0) {
+          score--;
+        } else {
+          score = 0;
+          updateScore();
+          handleZeroScore();
+        }
+        updateScore();
+      }, targetSpeed);
+
+      target.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearTimeout(removeTimeout);
+        if (playArea.contains(target)) playArea.removeChild(target);
+        score++;
+        if (score > highScore) highScore = score;
+        updateScore();
+        checkLevelUp();
+      });
+
+      playArea.appendChild(target);
+    }
+
+    function updateScore() {
+      scoreBoard.textContent = `Score: ${score}`;
+    }
+
+    function updateLevel() {
+      levelBoard.textContent = `Level: ${level}`;
+    }
+
+    function checkLevelUp() {
+      const newLevel = Math.floor(score / 5) + 1;
+      if (newLevel !== level) {
+        level = newLevel;
+        updateLevel();
+        targetSpeed = getSpeedForLevel(level);
+        if (level % 5 === 0) {
+          changeBackground();
+        }
+      }
+    }
+
+    function spawnLoop() {
+      clearTimeout(spawnTimeout);
+      createTarget();
+      spawnTimeout = setTimeout(spawnLoop, targetSpeed);
+    }
+
+    function restartGame() {
+      score = 0;
+      level = 1;
+      updateScore();
+      updateLevel();
+      targetSpeed = getSpeedForLevel(level);
+      changeBackground();
+
+      const targets = document.querySelectorAll(".target");
+      targets.forEach(t => t.remove());
+
+      hidePopup();
+      clearTimeout(spawnTimeout);
+      spawnLoop();
+    }
+
+    function handleZeroScore() {
+      clearTimeout(spawnTimeout);
+      finalScoreEl.textContent = `Score: ${score}`;
+      highScoreDisplay.textContent = `High Score: ${highScore}`;
+      showPopup();
+    }
+
+    function showPopup() {
+      document.getElementById("popupOverlay").style.display = "flex";
+    }
+
+    function hidePopup() {
+      document.getElementById("popupOverlay").style.display = "none";
+    }
+
+    document.getElementById("restartButton").addEventListener("click", restartGame);
+
+    updateScore();
+    updateLevel();
+    changeBackground();
+    spawnLoop();
+  </script>
+</body>
+</html>

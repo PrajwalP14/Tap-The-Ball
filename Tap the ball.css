@@ -1,0 +1,157 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #2c3e50, #4ca1af);
+  overflow: hidden;
+}
+
+#gameArea {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#playArea {
+  position: relative;
+  width: 90vw;
+  height: 80vh;
+  border: 5px solid #ffffffaa;
+  background-color: rgba(15, 25, 50, 0.85);
+  border-radius: 15px;
+  overflow: hidden;
+}
+.target {
+  width: 60px;
+  height: 60px;
+  background-image: url('Tap the ball.png'); /* Replace with your image filename */
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.target {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 15px #ff4e4e;
+  cursor: crosshair;
+  transition: transform 0.1s;
+}
+#homeButton,
+#scoreBoard,
+#levelBoard {
+  position: absolute;
+  color: white;
+  font-size: 20px;
+  padding: 10px;
+  z-index: 10;
+}
+
+#homeButton {
+  left: 10px;
+  top: 10px;
+  text-decoration: none;
+  background: #ffffff20;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  padding: 8px 12px;
+  transition: background 0.3s;
+}
+
+#homeButton:hover {
+  background: #ffffff40;
+}
+
+#scoreBoard {
+  right: 10px;
+  top: 10px;
+}
+
+#levelBoard {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#buttonRow {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 15px;
+}
+
+#buttonRow button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #00c3ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#buttonRow button:hover {
+  background: #007aa6;
+}
+
+/* Popup styling */
+#popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#popupBox {
+  background: #1e2a38;
+  padding: 30px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 20px #000;
+  max-width: 300px;
+}
+
+#popupBox p {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.popupButton {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #00c3ff;
+  color: white;
+  transition: background 0.3s;
+}
+
+.popupButton:hover {
+  background-color: #007aa6;
+}
